@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Slider</title>
+    <link rel="stylesheet" href="src/mySlider.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div id='slider'></div>
+
+    <script src="src/mySlider.js"></script>
+    <script>
+        document.querySelector('#slider').slider({
+            init: [{
+                name: 'one',
+                min: 50,
+                max: 750,
+                step: 50
+            },
+            {
+                name: 'two',
+                min: 1,
+                max: 100,
+                step: 1
+            }]
+        });
+    </script>
+</body>
+
+</html>
