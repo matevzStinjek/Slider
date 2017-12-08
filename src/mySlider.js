@@ -32,15 +32,15 @@ Element.prototype.slider = function (options) {
         inputNameInit.setAttribute('placeholder', 'name');
         var inputMinInit = document.createElement('input');
         inputMinInit.className = 'min'
-        inputMinInit.setAttribute('type', 'text');
+        inputMinInit.setAttribute('type', 'number');
         inputMinInit.setAttribute('placeholder', 'min');
         var inputMaxInit = document.createElement('input');
         inputMaxInit.className = 'max'
-        inputMaxInit.setAttribute('type', 'text');
+        inputMaxInit.setAttribute('type', 'number');
         inputMaxInit.setAttribute('placeholder', 'max');
         var inputStepInit = document.createElement('input');
         inputStepInit.className = 'step'
-        inputStepInit.setAttribute('type', 'text');
+        inputStepInit.setAttribute('type', 'number');
         inputStepInit.setAttribute('placeholder', 'step');
     
         var buttonAddInit = document.createElement('button');
@@ -218,6 +218,16 @@ function addOnClick() {
 
     if (data[0].value === '' || data[1].value === '' || data[2].value === '' || data[3].value === '') {
         warning.textContent = 'All fields required';
+        return;
+    }
+
+    if (parseInt(data[1].value) >= parseInt(data[2].value)){
+        warning.textContent = 'Min has to be smaller than max';
+        return;
+    }
+
+    if (parseInt(data[3]) > parseInt(data[2]) - parseInt(data[1])){
+        warning.textContent = 'Step has to be smaller than the difference between min and max.';
         return;
     }
 
