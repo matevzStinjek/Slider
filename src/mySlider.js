@@ -4,11 +4,12 @@ Element.prototype.slider = function (options) {
     var warning;
     var values;
     var center;
+    var blank;
 
     var units = [];
     var activeUnit;
     var drag = false;
-    
+
     var canvas;
     var context;
 
@@ -64,7 +65,11 @@ Element.prototype.slider = function (options) {
         canvas.width = 284;
         canvas.height = 284;
 
+        blank = document.createElement('div');
+        blank.className = 'blank';
+
         center.appendChild(canvas);
+        center.appendChild(blank);
 
         t.appendChild(dataInit);
         t.appendChild(values);
@@ -217,6 +222,9 @@ Element.prototype.slider = function (options) {
         borderNode.className = 'default-slider-border';
         borderNode.style.width = (50 * factor) + 'px';
         borderNode.style.height = (50 * factor) + 'px';
+
+        blank.style.width = (50 * factor - 1) + 'px';
+        blank.style.height = (50 * factor - 1) + 'px';
 
         var unit = ({
             name: name,
