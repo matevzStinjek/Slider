@@ -79,22 +79,23 @@ Element.prototype.slider = function (options) {
     function initListeners() {
 
         document.body.addEventListener('mousemove', function (e) {
-            move(e.clientX, e.clientY);
+            move(e.clientX, e.clientY, e);
         });
         document.body.addEventListener('touchmove', function (e) {
-            move(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+            move(e.changedTouches[0].clientX, e.changedTouches[0].clientY, e);
         });
 
         document.body.addEventListener('mouseup', end);
         document.body.addEventListener('touchstop', end);
 
-        function move(x, y) {
+        function move(x, y, e) {
             if (drag) {
                 var rad = getAngle(activeUnit.html.slider, x, y);
                 var angle = radToDeg(rad);
                 activeUnit.html.knob.style.transform = "rotate(" + angle + "deg)";
                 activeUnit.html.label.textContent = '$' + getValue(angle) + ' ' + activeUnit.name;
                 activeUnit.draw.rad = rad;
+                e.preventDefault();
                 draw();
             }
         }
