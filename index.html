@@ -14,17 +14,19 @@
     <script src="src/mySlider.js"></script>
     <script>
         document.querySelector('#slider').slider({
-            init: [{
+            init: [
+            {
                 name: 'one',
                 min: 50,
                 max: 750,
-                step: 50
+                step: 50,
+                radius: 90
             },
             {
                 name: 'two',
-                min: 1,
+                min: 0,
                 max: 100,
-                step: 1
+                step: 1,
             }]
         });
     </script>

@@ -15,29 +15,26 @@ Element.prototype.slider = function (options) {
 
     initDOM(this);
 
-    initListeners();
-
     function initDOM(t) {
 
         var dataInit = document.createElement('div');
         dataInit.className = 'data';
 
         data[0] = document.createElement('input');
-        data[0].className = 'name'
         data[0].setAttribute('type', 'text');
         data[0].setAttribute('placeholder', 'name');
         data[1] = document.createElement('input');
-        data[1].className = 'min'
         data[1].setAttribute('type', 'number');
         data[1].setAttribute('placeholder', 'min');
         data[2] = document.createElement('input');
-        data[2].className = 'max'
         data[2].setAttribute('type', 'number');
         data[2].setAttribute('placeholder', 'max');
         data[3] = document.createElement('input');
-        data[3].className = 'step'
         data[3].setAttribute('type', 'number');
         data[3].setAttribute('placeholder', 'step');
+        data[4] = document.createElement('input');
+        data[4].setAttribute('type', 'number');
+        data[4].setAttribute('placeholder', 'deg');
 
         var button = document.createElement('button');
         button.textContent = 'Add';
@@ -50,6 +47,7 @@ Element.prototype.slider = function (options) {
         dataInit.appendChild(data[1]);
         dataInit.appendChild(data[2]);
         dataInit.appendChild(data[3]);
+        dataInit.appendChild(data[4]);
         dataInit.appendChild(button);
         dataInit.appendChild(warning);
 
@@ -74,59 +72,53 @@ Element.prototype.slider = function (options) {
         t.appendChild(dataInit);
         t.appendChild(values);
         t.appendChild(center);
+
+        initListeners();
     }
 
     function initListeners() {
-
         document.body.addEventListener('mousemove', function (e) {
-            move(e.clientX, e.clientY, e);
+            if (drag) {
+                move(e.clientX, e.clientY, e);
+                e.preventDefault();
+            }
         });
         document.body.addEventListener('touchmove', function (e) {
-            move(e.changedTouches[0].clientX, e.changedTouches[0].clientY, e);
-        });
-
-        document.body.addEventListener('mouseup', end);
-        document.body.addEventListener('touchstop', end);
-
-        function move(x, y, e) {
             if (drag) {
-                var rad = getAngle(activeUnit.html.slider, x, y);
-                var angle = radToDeg(rad);
-                activeUnit.html.knob.style.transform = "rotate(" + angle + "deg)";
-                activeUnit.html.label.textContent = '$' + getValue(angle) + ' ' + activeUnit.name;
-                activeUnit.draw.rad = rad;
+                move(e.changedTouches[0].clientX, e.changedTouches[0].clientY, e);
                 e.preventDefault();
-                draw();
             }
-        }
-
-        function end() {
+        });
+        document.body.addEventListener('mouseup', function () {
             drag = false;
-        }
+        });
+        document.body.addEventListener('touchstop', function () {
+            drag = false;
+        });
     }
 
-    function applyOptions(options) {
+    function move(x, y, e) {
+        activeUnit.draw.rad = getAngle(activeUnit.html.slider, x, y);
+        var angle = radToDeg(activeUnit.draw.rad);
+        setValue(angle);
+    }
 
-        if (options.init) {
-            options.init.forEach(s => {
-                if (s.name !== null, s.min !== null, s.max !== null, s.step !== null)
-                    addSlider(s.name, s.min, s.max, s.step);
-                else
-                    console.log('Slider ' + s.name + ' could not be added - one or more of name, min, max or step is improperly defined.');
-            });
-        }
+    function setValue(angle) {
+        activeUnit.html.knob.style.transform = "rotate(" + angle + "deg)";
+        activeUnit.html.label.textContent = '$' + getValue(angle) + ' ' + activeUnit.name; //bug, commit 'Drying code, added input deg'
+        draw();
     }
 
     // drawing
     function draw() {
-        
+
         context.clearRect(0, 0, canvas.width, canvas.height);
-        var radius = canvas.width / 2;
+        var width = canvas.width / 2;
         var startAngle = 0 - Math.PI / 2;
 
         units.forEach(u => {
             context.beginPath();
-            context.arc(canvas.width / 2 + 1, canvas.height / 2 + 1, radius * u.draw.radius, startAngle, u.draw.rad, false);
+            context.arc(canvas.width / 2 + 1, canvas.height / 2 + 1, width * u.draw.k, startAngle, u.draw.rad, false);
             context.lineWidth = 14;
             context.strokeStyle = u.draw.color;
             context.stroke();
@@ -168,6 +160,10 @@ Element.prototype.slider = function (options) {
         return rad * (180 / Math.PI);
     }
 
+    function degToRad(deg) {
+        return deg * Math.PI / 180;
+    }
+
     function roundToStep(val, step) {
         var flag = (val / step) % 1,
             k = Math.floor(val / step),
@@ -179,11 +175,11 @@ Element.prototype.slider = function (options) {
         return out;
     }
 
-    // add slider
+    // add slider method
     function addOnClick() {
 
         if (data[0].value === '' || data[1].value === '' || data[2].value === '' || data[3].value === '') {
-            warning.textContent = 'All fields required';
+            warning.textContent = 'Name, min, max and step required';
             return;
         }
 
@@ -198,15 +194,37 @@ Element.prototype.slider = function (options) {
         }
 
         warning.textContent = '';
-        addSlider(data[0].value, data[1].value, data[2].value, data[3].value);
+
+        var rad = -90;
+        if (data[4].value)
+            rad = data[4].value - 90;
+
+        addSlider(data[0].value, data[1].value, data[2].value, data[3].value, rad);
+
+        data.forEach(input => {
+            input.value = "";
+        });
     }
 
+    function applyOptions(options) {
+
+        if (options.init) {
+            options.init.forEach(s => {
+                if (s.name !== null, s.min !== null, s.max !== null, s.step !== null) {
+                    if (!s.radius) s.radius = 0;
+                    addSlider(s.name, s.min, s.max, s.step, s.radius - 90);
+                } else
+                    console.log('Slider ' + s.name + ' could not be added - one or more of name, min, max or step is improperly defined.');
+            });
+        }
+    }
+
+    // add slider
     var factor = 6;
 
-    function addSlider(name, min, max, step) {
+    function addSlider(name, min, max, step, radius) {
 
-        factor--;
-        if (factor <= 0) return;
+        if (--factor === 0) return;
 
         var labelNode = document.createElement('div');
         labelNode.appendChild(document.createTextNode('$0 ' + name));
@@ -240,8 +258,8 @@ Element.prototype.slider = function (options) {
             },
             draw: {
                 color: colors.pop(),
-                rad: 0 - Math.PI / 2,
-                radius: factors.pop()
+                rad: degToRad(radius),
+                k: factors.pop()
             }
         });
 
@@ -249,36 +267,27 @@ Element.prototype.slider = function (options) {
         center.appendChild(unit.html.slider);
         center.appendChild(unit.html.border);
 
-        data.forEach(input => {
-            input.value = "";
-        });
-
         initSliderListeners(unit);
+        activeUnit = unit;
         units.push(unit);
+        setValue(radius);
     }
 
     function initSliderListeners(unit) {
 
         unit.html.slider.addEventListener('mousedown', function (e) {
-            start(e.clientX, e.clientY);
+            activeUnit = unit;
+            drag = true;
+            move(e.clientX, e.clientY);
         });
         unit.html.slider.addEventListener('touchstart', function (e) {
-            start(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
-        });
-
-        function start(x, y) {
             activeUnit = unit;
-            activeUnit.draw.rad = getAngle(unit.html.slider, x, y);
-            var angle = radToDeg(activeUnit.draw.rad);
-            activeUnit.html.knob.style.transform = "rotate(" + angle + "deg)";
-            activeUnit.html.label.textContent = '$' + getValue(angle) + ' ' + activeUnit.name;
-            activeUnit.html.slider = unit.html.slider;
             drag = true;
-            draw();
-        }
+            move(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+        });
     }
 
-    //data
+    // data
     var colors = [
         '#F44336',
         '#FB8C00',
