@@ -13,8 +13,6 @@ Element.prototype.slider = function (options) {
     var canvas;
     var context;
 
-    initDOM(this);
-
     function initDOM(t) {
 
         var dataInit = document.createElement('div');
@@ -35,6 +33,9 @@ Element.prototype.slider = function (options) {
         data[4] = document.createElement('input');
         data[4].setAttribute('type', 'number');
         data[4].setAttribute('placeholder', 'deg');
+        data[5] = document.createElement('input');
+        data[5].setAttribute('type', 'color');
+        data[5].setAttribute('value', colors.pop());
 
         var button = document.createElement('button');
         button.textContent = 'Add';
@@ -48,6 +49,7 @@ Element.prototype.slider = function (options) {
         dataInit.appendChild(data[2]);
         dataInit.appendChild(data[3]);
         dataInit.appendChild(data[4]);
+        dataInit.appendChild(data[5]);
         dataInit.appendChild(button);
         dataInit.appendChild(warning);
 
@@ -79,13 +81,13 @@ Element.prototype.slider = function (options) {
     function initListeners() {
         document.body.addEventListener('mousemove', function (e) {
             if (drag) {
-                move(e.clientX, e.clientY, e);
+                move(e.clientX, e.clientY);
                 e.preventDefault();
             }
         });
         document.body.addEventListener('touchmove', function (e) {
             if (drag) {
-                move(e.changedTouches[0].clientX, e.changedTouches[0].clientY, e);
+                move(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
                 e.preventDefault();
             }
         });
@@ -97,7 +99,7 @@ Element.prototype.slider = function (options) {
         });
     }
 
-    function move(x, y, e) {
+    function move(x, y) {
         activeUnit.draw.rad = getAngle(activeUnit.html.slider, x, y);
         var angle = radToDeg(activeUnit.draw.rad);
         setValue(angle);
@@ -105,7 +107,7 @@ Element.prototype.slider = function (options) {
 
     function setValue(angle) {
         activeUnit.html.knob.style.transform = "rotate(" + angle + "deg)";
-        activeUnit.html.label.textContent = '$' + getValue(angle) + ' ' + activeUnit.name; //bug, commit 'Drying code, added input deg'
+        activeUnit.html.label.textContent = '$' + getValue(angle) + ' ' + activeUnit.name; //bug
         draw();
     }
 
@@ -196,14 +198,15 @@ Element.prototype.slider = function (options) {
         warning.textContent = '';
 
         var rad = -90;
-        if (data[4].value)
-            rad = data[4].value - 90;
+        if (data[4].value) rad = data[4].value - 90;
 
-        addSlider(data[0].value, data[1].value, data[2].value, data[3].value, rad);
+        var color = data[5].value ? data[5].value : colors.pop();
 
-        data.forEach(input => {
-            input.value = "";
-        });
+        addSlider(data[0].value, data[1].value, data[2].value, data[3].value, rad, color);
+
+        for (var i = 0; i < 5; i++)
+            data[i].value = '';
+        data[5].value = colors.pop();
     }
 
     function applyOptions(options) {
@@ -212,7 +215,8 @@ Element.prototype.slider = function (options) {
             options.init.forEach(s => {
                 if (s.name !== null, s.min !== null, s.max !== null, s.step !== null) {
                     if (!s.radius) s.radius = 0;
-                    addSlider(s.name, s.min, s.max, s.step, s.radius - 90);
+                    if (!s.color) s.color = colors.pop();
+                    addSlider(s.name, s.min, s.max, s.step, s.radius - 90, s.color);
                 } else
                     console.log('Slider ' + s.name + ' could not be added - one or more of name, min, max or step is improperly defined.');
             });
@@ -222,7 +226,7 @@ Element.prototype.slider = function (options) {
     // add slider
     var factor = 6;
 
-    function addSlider(name, min, max, step, radius) {
+    function addSlider(name, min, max, step, radius, color) {
 
         if (--factor === 0) return;
 
@@ -257,7 +261,7 @@ Element.prototype.slider = function (options) {
                 border: borderNode
             },
             draw: {
-                color: colors.pop(),
+                color: color,
                 rad: degToRad(radius),
                 k: factors.pop()
             }
@@ -291,9 +295,9 @@ Element.prototype.slider = function (options) {
     var colors = [
         '#F44336',
         '#FB8C00',
-        '#43A047',
         '#1E88E5',
-        '#6A1B9A'
+        '#6A1B9A',
+        '#43A047'
     ];
 
     var factors = [
@@ -304,5 +308,6 @@ Element.prototype.slider = function (options) {
         0.935
     ];
 
+    initDOM(this);
     applyOptions(options);
 };

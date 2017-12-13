@@ -18,6 +18,11 @@ input {
     width: 70px;
 }
 
+input[type='color'] {
+    width: 25px;
+    padding: 0 3px;
+}
+
 button {
     margin: 0 5px;
     height: 28px;
