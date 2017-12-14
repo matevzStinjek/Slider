@@ -21,15 +21,19 @@ Element.prototype.slider = function (options) {
         data[0] = document.createElement('input');
         data[0].setAttribute('type', 'text');
         data[0].setAttribute('placeholder', 'name');
+        data[0].setAttribute('value', 'test'); //
         data[1] = document.createElement('input');
         data[1].setAttribute('type', 'number');
         data[1].setAttribute('placeholder', 'min');
+        data[1].setAttribute('value', '0');
         data[2] = document.createElement('input');
         data[2].setAttribute('type', 'number');
         data[2].setAttribute('placeholder', 'max');
+        data[2].setAttribute('value', '100');
         data[3] = document.createElement('input');
         data[3].setAttribute('type', 'number');
         data[3].setAttribute('placeholder', 'step');
+        data[3].setAttribute('value', '1');
         data[4] = document.createElement('input');
         data[4].setAttribute('type', 'number');
         data[4].setAttribute('placeholder', 'deg');
@@ -135,12 +139,6 @@ Element.prototype.slider = function (options) {
         return rad;
     }
 
-    function getValue(deg) {
-        var out = deg + 90;
-        if (out < 0) out += 360;
-        return adjustedValue(out);
-    }
-
     function getRelativeClickPos(element, x, y) {
         var rect = element.getBoundingClientRect();
         var x = x - rect.left - rect.width / 2;
@@ -148,14 +146,30 @@ Element.prototype.slider = function (options) {
         return [x, y];
     }
 
+    function getValue(deg) {
+        var out = deg + 90;
+        if (out < 0) out += 360;
+        return adjustedValue(out);
+    }
+
     function adjustedValue(deg) {
         var min = activeUnit.min,
             max = activeUnit.max,
             step = activeUnit.step,
             delta = max - min,
-            val = deg * delta / 360 + min;
-        out = roundToStep(val, step);
-        return out;
+            val = deg * delta / 360;
+            val += parseInt(min);
+        return roundToStep(val, step);
+    }
+
+    function roundToStep(val, step) {
+        var flag = (val / step) % 1,
+            k = Math.floor(val / step),
+            out = 0;
+        flag < 0.5 ?
+            out = k * step :
+            out = (k + 1) * step;
+        return Math.round(out*10000)/10000;
     }
 
     function radToDeg(rad) {
@@ -166,18 +180,7 @@ Element.prototype.slider = function (options) {
         return deg * Math.PI / 180;
     }
 
-    function roundToStep(val, step) {
-        var flag = (val / step) % 1,
-            k = Math.floor(val / step),
-            out = 0;
-
-        flag < 0.5 ?
-            out = k * step :
-            out = (k + 1) * step;
-        return out;
-    }
-
-    // add slider method
+    // add slider function
     function addOnClick() {
 
         if (data[0].value === '' || data[1].value === '' || data[2].value === '' || data[3].value === '') {
@@ -293,11 +296,11 @@ Element.prototype.slider = function (options) {
 
     // data
     var colors = [
-        '#F44336',
         '#FB8C00',
+        '#43A047',
         '#1E88E5',
         '#6A1B9A',
-        '#43A047'
+        '#F44336',
     ];
 
     var factors = [
