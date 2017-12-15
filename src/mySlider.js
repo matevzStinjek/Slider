@@ -21,7 +21,7 @@ Element.prototype.slider = function (options) {
         data[0] = document.createElement('input');
         data[0].setAttribute('type', 'text');
         data[0].setAttribute('placeholder', 'name');
-        data[0].setAttribute('value', 'test'); //
+        data[0].setAttribute('value', 'Health care');
         data[1] = document.createElement('input');
         data[1].setAttribute('type', 'number');
         data[1].setAttribute('placeholder', 'min');
@@ -29,7 +29,7 @@ Element.prototype.slider = function (options) {
         data[2] = document.createElement('input');
         data[2].setAttribute('type', 'number');
         data[2].setAttribute('placeholder', 'max');
-        data[2].setAttribute('value', '100');
+        data[2].setAttribute('value', '1000');
         data[3] = document.createElement('input');
         data[3].setAttribute('type', 'number');
         data[3].setAttribute('placeholder', 'step');
@@ -111,7 +111,7 @@ Element.prototype.slider = function (options) {
 
     function setValue(angle) {
         activeUnit.html.knob.style.transform = "rotate(" + angle + "deg)";
-        activeUnit.html.label.textContent = '$' + getValue(angle) + ' ' + activeUnit.name; //bug
+        activeUnit.html.label.textContent = '$' + getValue(angle); //bug
         draw();
     }
 
@@ -158,7 +158,7 @@ Element.prototype.slider = function (options) {
             step = activeUnit.step,
             delta = max - min,
             val = deg * delta / 360;
-            val += parseInt(min);
+        val += parseInt(min);
         return roundToStep(val, step);
     }
 
@@ -169,7 +169,7 @@ Element.prototype.slider = function (options) {
         flag < 0.5 ?
             out = k * step :
             out = (k + 1) * step;
-        return Math.round(out*10000)/10000;
+        return Math.round(out * 10000) / 10000;
     }
 
     function radToDeg(rad) {
@@ -233,8 +233,15 @@ Element.prototype.slider = function (options) {
 
         if (--factor === 0) return;
 
-        var labelNode = document.createElement('div');
-        labelNode.appendChild(document.createTextNode('$0 ' + name));
+        var labelNode = document.createElement('div'),
+            value = document.createElement('h1'),
+            colorBox = document.createElement('span'),
+            nameTag = document.createElement('p');
+            colorBox.style.backgroundColor = color;
+        nameTag.textContent = name;
+        labelNode.appendChild(value);
+        labelNode.appendChild(colorBox);
+        labelNode.appendChild(nameTag);
 
         var sliderNode = document.createElement('div'),
             sliderSpan = document.createElement('span');
@@ -258,7 +265,7 @@ Element.prototype.slider = function (options) {
             max: max,
             step: step,
             html: {
-                label: labelNode,
+                label: value,
                 slider: sliderNode,
                 knob: sliderSpan,
                 border: borderNode
@@ -270,9 +277,9 @@ Element.prototype.slider = function (options) {
             }
         });
 
-        values.appendChild(unit.html.label);
-        center.appendChild(unit.html.slider);
-        center.appendChild(unit.html.border);
+        values.appendChild(labelNode);
+        center.appendChild(sliderNode);
+        center.appendChild(borderNode);
 
         initSliderListeners(unit);
         activeUnit = unit;
@@ -296,6 +303,7 @@ Element.prototype.slider = function (options) {
 
     // data
     var colors = [
+        '#000000',
         '#FB8C00',
         '#43A047',
         '#1E88E5',

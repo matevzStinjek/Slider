@@ -1,6 +1,58 @@
+.data {
+    padding: 15px 0;
+}
+
+.data input {
+    border-radius: 4px;
+    border: 1px solid lightgray;
+    height: 25px;
+    font-size: 12px;
+    padding-left: 10px;
+    margin-right: 5px;
+    width: 75px;
+}
+
+.data input[type='color'] {
+    width: 25px;
+    padding: 0 3px;
+}
+
+.data button {
+    margin: 0 5px;
+    height: 28px;
+    width: 50px;
+    background-color: #5cb85c;
+    font-size: 12px;
+    letter-spacing: 1.2px;
+    color: white;
+    border-radius: 4px;
+    border: 1px solid #4cae4c;
+}
+
 .values {
     float: left;
-    width: 150px;
+    width: 250px;
+}
+
+.values div * {
+    display: inline-block;
+    margin: 0px;
+}
+
+.values div h1  {
+    min-width: 120px;
+    font-size: 40px;
+    line-height: 40px;
+}
+
+.values div span {
+    height: 10px;
+    width: 15px;
+    margin-right: 10px;
+}
+
+.values div p {
+    font-size: 14px;
 }
 
 .center {
