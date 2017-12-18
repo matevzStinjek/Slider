@@ -255,11 +255,6 @@ Element.prototype.slider = function (options) {
         sliderSpan.className = 'angle-input-knob'
         sliderNode.appendChild(sliderSpan);
 
-        var borderNode = document.createElement('div');
-        borderNode.className = 'default-slider-border';
-        borderNode.style.width = (50 * factor) + 'px';
-        borderNode.style.height = (50 * factor) + 'px';
-
         var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         circle.setAttributeNS(null, "stroke-width", 17);
         circle.setAttributeNS(null, "fill-opacity", 0);
