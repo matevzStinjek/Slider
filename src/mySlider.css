@@ -55,20 +55,27 @@
     font-size: 14px;
 }
 
-.center {
-    position: relative;
-    float: left;
-    height: 284px;
-    width: 284px;
-    z-index: 20;
-}
-
 .canvas {
     position: absolute;
     top: -1px;
     left: -1px;
-    opacity: 0.9;
+    opacity: 0.8;
     z-index: 30;
+}
+
+svg {
+    height: 300px;
+    width: 300px;
+    top: -1px;
+    left: 1px;
+}
+
+.center {
+    position: relative;
+    float: left;
+    height: 300px;
+    width: 300px;
+    z-index: 20;
 }
 
 .center .default-slider {
@@ -81,7 +88,7 @@
     border-radius: 50%;
     height: 250px;
     width: 250px;
-    border: 15px solid transparent;
+    border: 18px solid transparent;
     cursor: pointer;
     z-index: 40;
 }
@@ -100,29 +107,14 @@
 .center .default-slider .angle-input-knob::before {
     content: '';
     position: absolute;
-    margin-top: -7px;
+    margin-top: -8px;
     top: 50%;
-    right: -16px;
-    width: 13px;
-    height: 13px;
+    right: -18px;
+    width: 16px;
+    height: 16px;
     border-radius: 50%;
     background-color: #fff;
-    border: 2px solid gray;
-}
-
-.center .default-slider-border {
-    border: 15px solid lightgray;
-    position: absolute;
-    margin: auto;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    border-radius: 50%;
-    height: 250px;
-    width: 250px;
-    cursor: pointer;
-    z-index: 10;
+    border: 1px solid lightgrey;
 }
 
 .center .blank {

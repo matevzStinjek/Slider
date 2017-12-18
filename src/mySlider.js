@@ -10,6 +10,7 @@ Element.prototype.slider = function (options) {
     var activeUnit;
     var drag = false;
 
+    var svg;
     var canvas;
     var context;
 
@@ -66,12 +67,15 @@ Element.prototype.slider = function (options) {
         canvas = document.createElement('canvas');
         canvas.className = 'canvas';
         context = canvas.getContext('2d');
-        canvas.width = 284;
-        canvas.height = 284;
+        canvas.width = 300;
+        canvas.height = 300;
 
         blank = document.createElement('div');
         blank.className = 'blank';
 
+        svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+
+        center.appendChild(svg);
         center.appendChild(canvas);
         center.appendChild(blank);
 
@@ -125,7 +129,7 @@ Element.prototype.slider = function (options) {
         units.forEach(u => {
             context.beginPath();
             context.arc(canvas.width / 2 + 1, canvas.height / 2 + 1, width * u.draw.k, startAngle, u.draw.rad, false);
-            context.lineWidth = 14;
+            context.lineWidth = 17;
             context.strokeStyle = u.draw.color;
             context.stroke();
         });
@@ -256,6 +260,17 @@ Element.prototype.slider = function (options) {
         borderNode.style.width = (50 * factor) + 'px';
         borderNode.style.height = (50 * factor) + 'px';
 
+        var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttributeNS(null, "stroke-width", 17);
+        circle.setAttributeNS(null, "fill-opacity", 0);
+        circle.setAttributeNS(null, "r", svgRad.pop());
+        circle.setAttributeNS(null, "cx", 150);
+        circle.setAttributeNS(null, "cy", 150);
+        circle.setAttributeNS(null, "stroke", 'lightgray');
+        circle.setAttributeNS(null, "stroke-opacity", 0.8);
+        circle.setAttributeNS(null, "stroke-dasharray", '4, 1');
+        svg.appendChild(circle);
+
         blank.style.width = (50 * factor - 1) + 'px';
         blank.style.height = (50 * factor - 1) + 'px';
 
@@ -312,13 +327,22 @@ Element.prototype.slider = function (options) {
     ];
 
     var factors = [
-        0.23,
-        0.405,
-        0.58,
-        0.758,
-        0.935
+        0.228,
+        0.393,
+        0.560,
+        0.727,
+        0.894
     ];
 
+    var svgRad = [
+        34,
+        59,
+        84,
+        109,
+        134
+    ]
+
+    // start
     initDOM(this);
     applyOptions(options);
 };
