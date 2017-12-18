@@ -278,7 +278,6 @@ Element.prototype.slider = function (options) {
                 label: value,
                 slider: sliderNode,
                 knob: sliderSpan,
-                border: borderNode
             },
             draw: {
                 color: color,
@@ -289,7 +288,6 @@ Element.prototype.slider = function (options) {
 
         values.appendChild(labelNode);
         center.appendChild(sliderNode);
-        center.appendChild(borderNode);
 
         initSliderListeners(unit);
         activeUnit = unit;
