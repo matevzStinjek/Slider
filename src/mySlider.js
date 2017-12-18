@@ -187,6 +187,11 @@ Element.prototype.slider = function (options) {
     // add slider function
     function addOnClick() {
 
+        if (--factor <= 0) {
+            warning.textContent = 'Can\'t add any more sliders';
+            return;
+        }
+
         if (data[0].value === '' || data[1].value === '' || data[2].value === '' || data[3].value === '') {
             warning.textContent = 'Name, min, max and step required';
             return;
@@ -220,6 +225,10 @@ Element.prototype.slider = function (options) {
 
         if (options.init) {
             options.init.forEach(s => {
+                if (--factor <= 0) {
+                    console.log('Can\'t add any more sliders');
+                    return;
+                }
                 if (s.name !== null, s.min !== null, s.max !== null, s.step !== null) {
                     if (!s.radius) s.radius = 0;
                     if (!s.color) s.color = colors.pop();
@@ -234,8 +243,6 @@ Element.prototype.slider = function (options) {
     var factor = 6;
 
     function addSlider(name, min, max, step, radius, color) {
-
-        if (--factor === 0) return;
 
         var labelNode = document.createElement('div'),
             value = document.createElement('h1'),
